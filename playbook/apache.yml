@@ -1,0 +1,27 @@
+---
+- hosts: slave
+  sudo: yes
+  tasks:
+    - name: install apache httpd
+      yum:
+        name: httpd
+        state: latest
+    - name: Copy index.html
+      template:
+        src: /etc/ansible/index.html
+        dest: /var/www/html
+    - name: Enable it on system reboot
+      systemd:
+        name: httpd
+        enabled: yes
+        masked: no
+      notify:
+        - start httpd
+
+  handlers:
+    - name: start httpd
+      systemd: 
+        name: httpd
+        state: started
+      
+
