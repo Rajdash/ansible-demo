@@ -1,0 +1,12 @@
+---
+# tasks file for deploy-spring
+- name: deploy Spring app container
+  docker:
+    name: my-spring-app
+    image: localhost:5000/my-spring-app:1.0
+    state: reloaded
+    pull: always
+    expose:
+    - 8182
+    ports:
+    - "80:8182"

@@ -1,0 +1,5 @@
+---
+# defaults file for deploy-ignite
+source_code_path: /opt/spring
+git_url: https://github.com/Rajdash/build-test-deploy.git
+tag_no: 1.0

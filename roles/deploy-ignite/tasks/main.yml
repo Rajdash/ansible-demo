@@ -1,0 +1,32 @@
+---
+# tasks file for deploy-spring
+- name: Create folder
+  file:
+    path: /opt/spring
+    owner: root
+    group: root
+    mode: 0777
+    state: directory
+- name: clean folder
+  file:
+    state: absent
+    path: /opt/spring
+  
+- name: Download code 
+  git:
+   repo: 'https://github.com/Rajdash/build-test-deploy.git'
+   dest: /opt/spring
+
+- name: Build Code
+  shell: mvn clean install -f /opt/spring/pom.xml
+
+- name: Rename war
+  shell: mv /opt/spring/target/*.jar /opt/spring/target/spring-boot-web.jar
+
+- name: Build Docker image
+  docker_image:
+    path: /opt/spring
+    name: localhost:5000/my-spring-app
+    tag: 1.0
+    push: yes
+  

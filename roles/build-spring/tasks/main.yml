@@ -1,0 +1,31 @@
+---
+# tasks file for deploy-spring
+- name: Create folder
+  file:
+    path: "{{ source_code_path }}"
+    owner: root
+    group: root
+    mode: 0777
+    state: directory
+- name: clean folder
+  file:
+    state: absent
+    path: "{{ source_code_path }}"
+
+- name: Download code
+  git:
+   repo: '{{ git_url }}'
+   dest: "{{ source_code_path }}"
+
+- name: Build Code
+  shell: mvn clean install -f "{{ source_code_path }}"/pom.xml
+
+- name: Rename jar
+  shell: mv "{{ source_code_path }}"/target/*.jar "{{ source_code_path }}"/target/spring-boot-web.jar
+
+- name: Build Docker image
+  docker_image:
+    path: "{{ source_code_path }}"
+    name: localhost:5000/my-spring-app
+    tag: "{{ tag_no }}"
+    push: yes
